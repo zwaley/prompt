@@ -1,0 +1,52 @@
+{
+  "name": "prompt-manager",
+  "version": "1.0.0",
+  "description": "AI提示词管理器 - 高效收集、管理和搜索AI prompts",
+  "main": "backend/dist/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "start": "cd backend && npm start",
+    "db:init": "cd backend && npx prisma generate && npx prisma db push",
+    "db:reset": "cd backend && npx prisma db push --force-reset",
+    "db:studio": "cd backend && npx prisma studio",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend": "cd backend && npm test",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend && npm run lint"
+  },
+  "keywords": [
+    "prompt",
+    "ai",
+    "management",
+    "search",
+    "collection",
+    "typescript",
+    "react",
+    "nodejs"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/prompt-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/prompt-manager/issues"
+  },
+  "homepage": "https://github.com/yourusername/prompt-manager#readme"
+}

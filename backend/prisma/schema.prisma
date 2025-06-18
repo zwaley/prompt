@@ -1,0 +1,114 @@
+// Prisma数据库配置文件
+// 定义数据模型和数据库连接
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// 分类表
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  color       String   @default("#1890ff")
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  // 关联关系
+  prompts     Prompt[]
+  
+  @@map("categories")
+}
+
+// 标签表
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  color String @default("#87d068")
+  
+  // 关联关系
+  prompts PromptTag[]
+  
+  @@map("tags")
+}
+
+// Prompt主表
+model Prompt {
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String
+  description String?
+  categoryId  Int?     @map("category_id")
+  priority    Int      @default(0)
+  useCount    Int      @default(0) @map("use_count")
+  rating      Float    @default(0)
+  isFavorite  Boolean  @default(false) @map("is_favorite")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  // 关联关系
+  category      Category?     @relation(fields: [categoryId], references: [id])
+  tags          PromptTag[]
+  usageHistory  UsageHistory[]
+  versions      PromptVersion[]
+  
+  @@map("prompts")
+}
+
+// Prompt标签关联表
+model PromptTag {
+  promptId Int @map("prompt_id")
+  tagId    Int @map("tag_id")
+  
+  // 关联关系
+  prompt Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  @@id([promptId, tagId])
+  @@map("prompt_tags")
+}
+
+// 使用历史表
+model UsageHistory {
+  id       Int      @id @default(autoincrement())
+  promptId Int      @map("prompt_id")
+  context  String?
+  usedAt   DateTime @default(now()) @map("used_at")
+  
+  // 关联关系
+  prompt Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+  
+  @@map("usage_history")
+}
+
+// Prompt版本表（用于版本控制）
+model PromptVersion {
+  id          Int      @id @default(autoincrement())
+  promptId    Int      @map("prompt_id")
+  version     String
+  title       String
+  content     String
+  description String?
+  changeLog   String?  @map("change_log")
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  // 关联关系
+  prompt Prompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+  
+  @@unique([promptId, version])
+  @@map("prompt_versions")
+}
+
+// 搜索历史表
+model SearchHistory {
+  id        Int      @id @default(autoincrement())
+  query     String
+  results   Int      @default(0)
+  searchedAt DateTime @default(now()) @map("searched_at")
+  
+  @@map("search_history")
+}
